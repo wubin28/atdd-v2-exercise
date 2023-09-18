@@ -13,6 +13,8 @@ import okhttp3.Response;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,8 +22,12 @@ import java.net.URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
 
+@SpringBootTest
 public class TestSteps {
     private WebDriver webDriver = null;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @SneakyThrows
     public WebDriver createWebDriver() {
@@ -49,7 +55,11 @@ public class TestSteps {
     }
 
     @假如("存在用户名为{string}和密码为{string}的用户")
-    public void 存在用户名为和密码为的用户(String arg0, String arg1) {
+    public void 存在用户名为和密码为的用户(String username, String password) {
+        User user = new User();
+        user.setUserName(username);
+        user.setPassword(password);
+        userRepository.save(user);
     }
 
     @当("通过API以用户名为{string}和密码为{string}登录时")
