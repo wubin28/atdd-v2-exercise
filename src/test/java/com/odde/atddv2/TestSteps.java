@@ -18,7 +18,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
@@ -67,6 +69,8 @@ public class TestSteps {
         userRepository.save(user);
     }
 
+    @Transactional
+    @Rollback
     @当("通过API以用户名为{string}和密码为{string}登录时")
     public void 通过api以用户名为和密码为登录时(String username, String password) {
         // Create OkHttpClient instance
@@ -94,6 +98,9 @@ public class TestSteps {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Delete the user after the test
+        userRepository.deleteAllByUserName(username);
     }
 
     @当("在百度搜索关键字{string}")
