@@ -10,14 +10,19 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
@@ -92,7 +97,35 @@ public class TestSteps {
     }
 
     @当("在百度搜索关键字{string}")
-    public void 在百度搜索关键字(String arg0) {
+    public void 在百度搜索关键字(String keyword) {
+        // Navigate to Baidu
+        WebDriver webDriver = getWebDriver();
+        webDriver.get("https://www.baidu.com");
+
+        // Find the search input field and enter the keyword "cucumber"
+        webDriver.findElement(By.xpath("//*[@id='kw']")).sendKeys(keyword);
+
+        // Find the search button and click on it
+        webDriver.findElement(By.xpath("//*[@id='su']")).click();
+
+        // Wait for the search results to load
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tsn_inner']/div[2]/span")));
+
+        // Extract and print the number of search results
+        String resultText = webDriver.findElement(By.xpath("//*[@id='tsn_inner']/div[2]/span")).getText();
+        System.out.println("Number of search results: " + extractNumber(resultText));
+    }
+
+    private String extractNumber(String resultText) {
+        Pattern pattern = Pattern.compile("(\\d{1,3}(?:,\\d{3})*)(?!\\d)"); // regex pattern for number with commas
+        Matcher matcher = pattern.matcher(resultText);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return "<no number>";
     }
 
     private WebDriver getWebDriver() {
