@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Thread.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.By.xpath;
 
@@ -98,7 +99,8 @@ public class TestSteps {
     }
 
     @那么("{string}登录成功")
-    public void 登录成功(String arg0) {
+    public void 登录成功(String userName) {
+        assertThat(webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/div[2]/section/div")).getText()).contains(userName);
     }
 
     @那么("登录失败的错误信息是{string}")
