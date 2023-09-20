@@ -88,4 +88,20 @@ public class TestSteps {
             webDriver = createWebDriver();
         return webDriver;
     }
+
+    @当("以用户名为{string}和密码为{string}登录时")
+    public void 以用户名为和密码为登录时(String userName, String password) {
+        getWebDriver().get("http://host.docker.internal:10081/");
+        webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/form/div[2]/div/div/input")).sendKeys(userName);
+        webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/form/div[3]/div/div/input")).sendKeys(password);
+        webDriver.findElement(By.xpath("//*[@id=\"app\"]/div/form/button")).click();
+    }
+
+    @那么("{string}登录成功")
+    public void 登录成功(String arg0) {
+    }
+
+    @那么("登录失败的错误信息是{string}")
+    public void 登录失败的错误信息是(String arg0) {
+    }
 }
