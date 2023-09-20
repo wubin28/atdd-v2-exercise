@@ -19,4 +19,8 @@ public class HomePage {
         browser.inputTextByPlaceholder("密码", password);
         browser.clickByText("登录");
     }
+
+    public void navigateToOrder() {
+        browser.clickByText("订单");
+    }
 }
