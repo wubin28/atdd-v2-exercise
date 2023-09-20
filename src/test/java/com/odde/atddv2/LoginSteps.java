@@ -28,7 +28,11 @@ public class LoginSteps {
         getWebDriver().get("http://host.docker.internal:10081");
         inputByPlaceholder(userName, "用户名");
         inputByPlaceholder(password, "密码");
-        await().ignoreExceptions().until(() -> getWebDriver().findElement(xpath("//*[text()=\"登录\"]")), Objects::nonNull).click();
+        clickByText("登录");
+    }
+
+    private void clickByText(String text) {
+        await().ignoreExceptions().until(() -> getWebDriver().findElement(xpath("//*[text()=\"" + text + "\"]")), Objects::nonNull).click();
     }
 
     private void inputByPlaceholder(String value, String placeholder) {
