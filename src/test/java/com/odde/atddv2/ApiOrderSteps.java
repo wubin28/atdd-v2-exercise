@@ -38,4 +38,9 @@ public class ApiOrderSteps {
         table.asMaps().forEach(map -> order.getLines().add(objectMapper.convertValue(map, OrderLine.class).setOrder(order)));
         orderRepo.save(order);
     }
+
+    @当("API查询订单{string}详情时")
+    public void api查询订单详情时(String orderNo) {
+        api.get("orders/"+orderNo);
+    }
 }
