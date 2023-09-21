@@ -10,7 +10,15 @@ import io.cucumber.java.zh_cn.当;
 import io.cucumber.java.zh_cn.那么;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
 import javax.transaction.Transactional;
+
+import java.io.IOException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 
 public class ApiOrderSteps {
 
@@ -40,7 +48,22 @@ public class ApiOrderSteps {
     }
 
     @当("API查询订单{string}详情时")
-    public void api查询订单详情时(String orderNo) {
-        api.get("orders/"+orderNo);
+    public void api查询订单详情时(String orderCode) {
+        api.get("orders/"+orderCode);
+    }
+
+    @当("通过API发货订单{string}，快递单号为{string}")
+    public void 通过api发货订单快递单号为(String orderCode, String deliveryCode) throws IOException {
+        api.post("orders/"+orderCode+"/deliver", "{\"deliverNo\": \""+deliveryCode+"\"}");
+//        JsonObject jsonObject = Json.createObjectBuilder()
+//                .add("deliveryCode", deliveryCode).build();
+//        api.post("orders/"+orderCode+"/deliver", jsonObject.toString());
+    }
+
+    @那么("订单{string}已发货，快递单号为{string}")
+    public void 订单已发货快递单号为(String orderCode, String deliveryCode) {
+        Order order = orderRepo.findByCode(orderCode);
+        assertThat(order.getDeliverNo()).isEqualTo(deliveryCode);
+        assertThat(order.getStatus()).isEqualTo(Order.OrderStatus.delivering);
     }
 }

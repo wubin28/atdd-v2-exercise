@@ -13,6 +13,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
+
 public class Api {
 
     private final OkHttpClient okHttpClient = new OkHttpClient();
@@ -47,4 +49,14 @@ public class Api {
         JSONAssert.assertEquals(json, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
+//    @SneakyThrows
+    public void post(String path, String body) throws IOException {
+        Request request = new Request.Builder()
+                .url(String.format("http://localhost:10081/api/%s", path))
+                .header("Accept", "application/json")
+                .header("token", token)
+                .post(RequestBody.create(MediaType.parse("application/json"), body))
+                .build();
+        response = okHttpClient.newCall(request).execute().body().string();
+    }
 }
